@@ -68,4 +68,49 @@ namespace rc {
         map<char, vector<bool*> > keys;
         map<char, vector<Delegate> > triggers;
     };
+    
+    class TextSettings {
+    public:
+        TextSettings(){};
+        
+        TextSettings( string location ){
+            load(location);
+        }
+        
+        bool load( string location ){
+            file.clear();
+            if ( file.open(location) ){
+                buffer = file.readToBuffer();
+            } else {
+                return false;
+            }
+        }
+        
+        string getSetting( string def, int position=-1 ){
+            string ret = def;
+            
+            // aka next setting
+            if ( position == -1 ){
+                string get = buffer.getNextLine();
+                if ( get != "" ){
+                    ret = get;
+                }
+            // specific line
+            } else {
+                ofLogWarning()<<"[rc::TextSettings] Reseting line reader, must call with position from here on out";
+                buffer.resetLineReader(); // kind of a bad idea
+                for ( int i=0; i<position; i++){
+                    buffer.getNextLine();
+                }
+                ret = getSetting( def );
+            }
+            
+            return ret;
+        }
+        
+    protected:
+        ofFile      file;
+        ofBuffer    buffer;
+        
+    };
 }
