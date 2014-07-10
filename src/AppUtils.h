@@ -69,6 +69,8 @@ namespace rc {
         map<char, vector<Delegate> > triggers;
     };
     
+#pragma mark TextSettings
+    
     class TextSettings {
     public:
         TextSettings(){};
@@ -111,6 +113,57 @@ namespace rc {
     protected:
         ofFile      file;
         ofBuffer    buffer;
+    };
+
+#pragma mark Timer
+    
+    class Timer {
+    public:
+        
+        Timer(){
+            stop();
+        }
+        
+        void start( int intervalMillis ){
+            interval = intervalMillis;
+            timeStarted = ofGetElapsedTimeMillis();
+            lastFired   = ofGetElapsedTimeMillis();
+        }
+        
+        void stop(){
+            interval = timeStarted = lastFired = 0;
+        }
+        
+        float getPercentage( int time = -1 ){
+            if ( !hasStarted() ) return 0.0;
+            if ( time == -1 ) time = ofGetElapsedTimeMillis();
+            return ofMap( (float) (time - lastFired), 0.0, interval, 0.0, 1.0);
+        }
+        
+        // call empty to use current time
+        bool isReady( int time = -1 ){
+            if ( !hasStarted() ) return false;
+            if ( time == -1 ) time = ofGetElapsedTimeMillis();
+            if ( time - lastFired > interval ){
+                lastFired = time;
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        int getTimeStarted(){
+            return timeStarted;
+        }
+        
+        bool hasStarted(){
+            return !(timeStarted == 0);
+        }
+        
+    protected:
+        int timeStarted, lastFired, interval;
         
     };
+    
+    
 }

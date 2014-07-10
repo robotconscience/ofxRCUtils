@@ -18,4 +18,8 @@ namespace rc {
     static void ofTranslateNegCenter(){
         ofTranslate(-ofGetWidth()/2.0, -ofGetHeight()/2.0);
     }
+    
+    static ofPoint ofCenter(){
+        return ofPoint( ofGetWidth()/2.0, ofGetHeight()/2.0 );
+    }
 }
